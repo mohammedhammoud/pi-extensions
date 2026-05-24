@@ -10,7 +10,7 @@ interface PresetDefinition {
   options: ModelOptions;
 }
 
-export const PRESET_DEFINITIONS = [
+const PRESET_DEFINITIONS = [
   {
     id: "precise",
     label: "Precise",
