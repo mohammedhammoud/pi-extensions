@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.2.0...pi-local-model-options-v0.2.1) (2026-05-24)
+
+
+### Bug Fixes
+
+* force deployment ([d401c38](https://github.com/mohammedhammoud/pi-extensions/commit/d401c38c7d6562625c8f8a8f241db87dc4b2ac55))
+
 ## [0.2.0](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.1.0...pi-local-model-options-v0.2.0) (2026-05-24)
 
 
