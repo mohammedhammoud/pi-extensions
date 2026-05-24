@@ -1,0 +1,67 @@
+{
+  "name": "pi-local-model-options-extensions",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Collection of Pi local model option extensions.",
+  "type": "module",
+  "license": "MIT",
+  "workspaces": [
+    "extensions/*"
+  ],
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "local-llm"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohammedhammoud/pi-extensions.git"
+  },
+  "scripts": {
+    "clean": "npm --workspaces run clean",
+    "build": "npm --workspaces run build",
+    "check": "npm run typecheck && npm run lint && npm run knip",
+    "typecheck": "npm --workspaces run typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "knip": "knip",
+    "knip:fix": "knip --fix --format",
+    "commitlint": "commitlint",
+    "lint-staged": "lint-staged",
+    "prepare": "husky",
+    "pack:local-model-options": "npm --workspace @mohammedhammoud/pi-local-model-options pack --dry-run",
+    "publish:local-model-options": "npm publish --workspace @mohammedhammoud/pi-local-model-options --access public"
+  },
+  "lint-staged": {
+    "*.{ts,js,cjs,json,md}": [
+      "prettier --write"
+    ],
+    "*.{ts,js}": [
+      "eslint --fix"
+    ]
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/pi-local-model-options/src/index.ts"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.0.0",
+    "@commitlint/config-conventional": "^21.0.0",
+    "@earendil-works/pi-coding-agent": "^0.75.5",
+    "@earendil-works/pi-tui": "^0.75.5",
+    "@eslint/js": "^9.26.0",
+    "@types/node": "^24.10.0",
+    "eslint": "^9.26.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-unused-imports": "^4.4.0",
+    "globals": "^16.1.0",
+    "husky": "^9.1.7",
+    "knip": "^6.12.2",
+    "lint-staged": "^17.0.4",
+    "prettier": "^3.6.2",
+    "tsdown": "^0.16.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.31.0"
+  }
+}
