@@ -1,6 +1,6 @@
 {
   "name": "@mohammedhammoud/pi-local-model-options",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Pi extension for per-model local model options.",
   "type": "module",
   "license": "MIT",

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.2.1...pi-local-model-options-v0.3.0) (2026-05-24)
+
+
+### Features
+
+* **pi-local-model-options:** add presets and simplify options flow ([f6ef03d](https://github.com/mohammedhammoud/pi-extensions/commit/f6ef03d9ec55fb529f67d72a038744815134c86d))
+
 ## [0.2.1](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.2.0...pi-local-model-options-v0.2.1) (2026-05-24)
 
 
