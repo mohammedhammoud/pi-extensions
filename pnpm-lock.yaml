@@ -63,10 +63,10 @@ importers:
   extensions/pi-local-model-options:
     dependencies:
       '@earendil-works/pi-coding-agent':
-        specifier: ^0.75.0
+        specifier: '*'
         version: 0.75.5(ws@8.21.0)(zod@4.4.3)
       '@earendil-works/pi-tui':
-        specifier: ^0.75.0
+        specifier: '*'
         version: 0.75.5
 
 packages:
