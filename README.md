@@ -1,6 +1,6 @@
-# Pi Local Model Options Extensions
+# Pi Agent Extensions
 
-Collection of Pi extensions for local model/provider options.
+Collection of Pi extensions
 
 ## Install
 
