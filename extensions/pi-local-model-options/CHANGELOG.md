@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.3.0...pi-local-model-options-v0.3.1) (2026-05-24)
+
+
+### Bug Fixes
+
+* remove redundant formatModelKey wrapper ([a462805](https://github.com/mohammedhammoud/pi-extensions/commit/a462805de9bb1a006de6992cb2021883cf51fb57))
+
 ## [0.3.0](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.2.1...pi-local-model-options-v0.3.0) (2026-05-24)
 
 
