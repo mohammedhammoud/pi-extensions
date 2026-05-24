@@ -13,6 +13,7 @@ import {
   type ActiveModel,
   type ExtensionState,
 } from "../core/state";
+import { getPresetId } from "./presets";
 
 const STATUS_KEY = "local-options";
 const STATUS_SEPARATOR = " ";
@@ -22,10 +23,19 @@ function clearStatus(ctx: ExtensionContext): void {
 }
 
 function formatStatus(model: ActiveModel, options: ModelOptions): string {
+  const presetId = getPresetId(options);
+  const presetLabel = presetId
+    ? presetId.charAt(0).toUpperCase() + presetId.slice(1)
+    : "";
+
   const values = MODEL_OPTION_KEYS.map((key) => {
     const definition = MODEL_OPTION_DEFINITIONS[key];
     return `${definition.statusLabel}=${formatOptionValue(key, options[key])}`;
   }).join(STATUS_SEPARATOR);
+
+  if (presetLabel) {
+    return `local ${getModelKey(model)} ${presetLabel} ${values}`;
+  }
 
   return `local ${getModelKey(model)} ${values}`;
 }

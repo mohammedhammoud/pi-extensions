@@ -108,9 +108,9 @@ function buildSettingItem(
 
 function buildSettingItems(options: ModelOptions, theme: Theme): SettingItem[] {
   return [
+    buildPresetItem(options, theme),
     buildEnabledItem(options),
     ...MODEL_OPTION_KEYS.map((key) => buildSettingItem(key, options, theme)),
-    buildPresetItem(options, theme),
     buildResetItem(),
   ];
 }

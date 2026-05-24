@@ -66,7 +66,7 @@ export function isPresetId(value: string): value is PresetId {
   return PRESET_IDS.includes(value as PresetId);
 }
 
-function getPresetId(options: ModelOptions): PresetId | undefined {
+export function getPresetId(options: ModelOptions): PresetId | undefined {
   return PRESET_DEFINITIONS.find((preset) => isPresetMatch(options, preset))
     ?.id;
 }
