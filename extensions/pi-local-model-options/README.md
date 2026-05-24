@@ -9,7 +9,7 @@ Pi extension for per-model local model options.
 - Config saved per `provider/model`
 - Status line only when active config is enabled
 - Request patching only for the active enabled model
-- Presets: deterministic, balanced, creative
+- Presets: precise, balanced, exploratory
 
 ## Install
 

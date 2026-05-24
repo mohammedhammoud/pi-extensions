@@ -1,5 +1,5 @@
 import type { ExtensionContext, Theme } from "@earendil-works/pi-coding-agent";
-import type { SelectItem, SettingItem } from "@earendil-works/pi-tui";
+import type { SettingItem } from "@earendil-works/pi-tui";
 import {
   formatOptionValue,
   MODEL_OPTION_DEFINITIONS,
@@ -11,6 +11,7 @@ import {
   applyPreset,
   getPresetValue,
   isPresetId,
+  PRESET_ITEMS,
   type PresetId,
 } from "./presets";
 import {
@@ -42,11 +43,6 @@ const PRESET_TITLE = "Preset";
 const RESET_LABEL = "Reset current model";
 const INVALID_VALUE_MESSAGE = "Invalid value";
 const ERROR_LEVEL = "error";
-const PRESET_ITEMS: SelectItem[] = [
-  { value: "deterministic", label: "Deterministic" },
-  { value: "balanced", label: "Balanced" },
-  { value: "creative", label: "Creative" },
-];
 
 function buildEnabledItem(options: ModelOptions): SettingItem {
   return {

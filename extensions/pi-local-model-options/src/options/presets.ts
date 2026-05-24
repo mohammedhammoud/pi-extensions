@@ -12,8 +12,8 @@ interface PresetDefinition {
 
 const PRESET_DEFINITIONS = [
   {
-    id: "deterministic",
-    label: "Deterministic",
+    id: "precise",
+    label: "Precise",
     options: {
       enabled: true,
       temperature: 0.1,
@@ -32,8 +32,8 @@ const PRESET_DEFINITIONS = [
     },
   },
   {
-    id: "creative",
-    label: "Creative",
+    id: "exploratory",
+    label: "Exploratory",
     options: {
       enabled: true,
       temperature: 0.7,
@@ -49,6 +49,11 @@ const PRESET_IDS = PRESET_DEFINITIONS.map((preset) => preset.id);
 const PRESETS_BY_ID = Object.fromEntries(
   PRESET_DEFINITIONS.map((preset) => [preset.id, preset]),
 ) as Record<PresetId, (typeof PRESET_DEFINITIONS)[number]>;
+
+export const PRESET_ITEMS = PRESET_DEFINITIONS.map((preset) => ({
+  value: preset.id,
+  label: preset.label,
+}));
 
 function isPresetMatch(
   options: ModelOptions,
