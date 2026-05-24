@@ -1,45 +1,45 @@
-import { getSettingsListTheme } from "@earendil-works/pi-coding-agent";
-import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { Container, SettingsList, Text } from "@earendil-works/pi-tui";
-import { formatModelKey, type ActiveModel } from "../core/model.js";
-import type { ExtensionState } from "../core/state.js";
-import { SETTING_LIST_HEIGHT } from "../options/defaults.js";
-import { renderStatus } from "../options/status.js";
-import { applyOptionChange } from "../options/update.js";
-import type { OptionId } from "../options/types.js";
-import { buildSettingItems, refreshSettingItems } from "./settings-items.js";
+import {
+  getSettingsListTheme,
+  type ExtensionContext,
+  type Theme,
+} from "@earendil-works/pi-coding-agent";
+import {
+  Container,
+  SettingsList,
+  Text,
+  type SettingItem,
+} from "@earendil-works/pi-tui";
+import { LIST_HEIGHT } from "./constants";
 
-export async function openOptionsPanel(
-  state: ExtensionState,
+export interface SettingsPanelControls {
+  updateValue(id: string, value: string): void;
+  requestRender(): void;
+}
+
+export interface SettingsPanelConfig {
+  title: string;
+  buildItems(theme: Theme): SettingItem[];
+  onChange(id: string, value: string, controls: SettingsPanelControls): void;
+}
+
+export async function openSettingsPanel(
   ctx: ExtensionContext,
-  model: ActiveModel,
+  config: SettingsPanelConfig,
 ): Promise<void> {
   await ctx.ui.custom<void>((tui, theme, _kb, done) => {
     const container = new Container();
-    container.addChild(
-      new Text(
-        theme.fg(
-          "accent",
-          theme.bold(`Model options: ${formatModelKey(model)}`),
-        ),
-      ),
-    );
+    container.addChild(new Text(theme.fg("accent", theme.bold(config.title))));
 
     const settingsList = new SettingsList(
-      buildSettingItems(state, model, theme),
-      SETTING_LIST_HEIGHT,
+      config.buildItems(theme),
+      LIST_HEIGHT,
       getSettingsListTheme(),
       (id: string, value: string) => {
-        const next = applyOptionChange(
-          state,
-          ctx,
-          model,
-          id as OptionId,
-          value,
-        );
-        renderStatus(state, ctx);
-        refreshSettingItems(settingsList, next);
-        tui.requestRender();
+        config.onChange(id, value, {
+          updateValue: (itemId: string, nextValue: string) =>
+            settingsList.updateValue(itemId, nextValue),
+          requestRender: () => tui.requestRender(),
+        });
       },
       () => done(undefined),
     );

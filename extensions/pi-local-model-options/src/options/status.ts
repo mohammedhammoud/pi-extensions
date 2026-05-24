@@ -1,11 +1,36 @@
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { getContextModel } from "../core/model.js";
-import type { ExtensionState } from "../core/state.js";
-import { STATUS_KEY } from "./defaults.js";
-import { formatStatus } from "./format.js";
-import { getModelOptions, hasConfiguredValues } from "./store.js";
+import {
+  formatOptionValue,
+  hasConfiguredValues,
+  MODEL_OPTION_DEFINITIONS,
+  MODEL_OPTION_KEYS,
+  type ModelOptions,
+} from "./definitions";
+import { getModelOptions } from "../store";
+import {
+  formatModelKey,
+  getContextModel,
+  type ActiveModel,
+  type ExtensionState,
+} from "../core/state";
 
-export function renderStatus(
+const STATUS_KEY = "local-options";
+const STATUS_SEPARATOR = " ";
+
+function clearStatus(ctx: ExtensionContext): void {
+  ctx.ui.setStatus(STATUS_KEY, "");
+}
+
+function formatStatus(model: ActiveModel, options: ModelOptions): string {
+  const values = MODEL_OPTION_KEYS.map((key) => {
+    const definition = MODEL_OPTION_DEFINITIONS[key];
+    return `${definition.statusLabel}=${formatOptionValue(key, options[key])}`;
+  }).join(STATUS_SEPARATOR);
+
+  return `local ${formatModelKey(model)} ${values}`;
+}
+
+export function renderOptionsStatus(
   state: ExtensionState,
   ctx: ExtensionContext,
 ): void {
@@ -22,8 +47,4 @@ export function renderStatus(
   }
 
   ctx.ui.setStatus(STATUS_KEY, formatStatus(model, options));
-}
-
-function clearStatus(ctx: ExtensionContext): void {
-  ctx.ui.setStatus(STATUS_KEY, "");
 }
