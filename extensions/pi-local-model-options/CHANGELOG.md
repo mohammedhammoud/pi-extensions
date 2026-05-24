@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.3.1...pi-local-model-options-v0.4.0) (2026-05-24)
+
+
+### Features
+
+* **options:** show preset name in status bar ([c556e96](https://github.com/mohammedhammoud/pi-extensions/commit/c556e96a2045e19be791750d243d8d9d91e3723f))
+
 ## [0.3.1](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.3.0...pi-local-model-options-v0.3.1) (2026-05-24)
 
 
