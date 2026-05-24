@@ -21,7 +21,7 @@ import {
   setModelOptions,
 } from "../store";
 import {
-  formatModelKey,
+  getModelKey,
   type ActiveModel,
   type ExtensionState,
 } from "../core/state";
@@ -233,7 +233,7 @@ export async function openOptionsPanel(
   const options = getModelOptions(state.store, model) ?? EMPTY_OPTIONS;
 
   await openSettingsPanel(ctx, {
-    title: `Model options: ${formatModelKey(model)}`,
+    title: `Model options: ${getModelKey(model)}`,
     buildItems: (theme) => buildSettingItems(options, theme),
     onChange: (id, value, controls) => {
       const result = parseOptionAction(id, value);

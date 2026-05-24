@@ -23,10 +23,6 @@ export function getModelKey(model: ActiveModel): string {
   return `${model.provider}/${model.id}`;
 }
 
-export function formatModelKey(model: ActiveModel): string {
-  return getModelKey(model);
-}
-
 export function createState(): ExtensionState {
   return {
     store: loadStore(),

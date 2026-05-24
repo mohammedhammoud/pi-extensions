@@ -8,7 +8,7 @@ import {
 } from "./definitions";
 import { getModelOptions } from "../store";
 import {
-  formatModelKey,
+  getModelKey,
   getContextModel,
   type ActiveModel,
   type ExtensionState,
@@ -27,7 +27,7 @@ function formatStatus(model: ActiveModel, options: ModelOptions): string {
     return `${definition.statusLabel}=${formatOptionValue(key, options[key])}`;
   }).join(STATUS_SEPARATOR);
 
-  return `local ${formatModelKey(model)} ${values}`;
+  return `local ${getModelKey(model)} ${values}`;
 }
 
 export function renderOptionsStatus(
