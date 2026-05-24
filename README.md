@@ -1,12 +1,10 @@
-# Pi Agent Extensions
+# pi-extensions
 
-Collection of Pi extensions
+Monorepo for Pi extensions.
 
-## Install
+## Extensions
 
-```bash
-pi install npm:@mohammedhammoud/pi-local-model-options
-```
+- `@mohammedhammoud/pi-local-model-options` — per-model local provider options.
 
 ## Development
 
@@ -15,3 +13,9 @@ pnpm install
 pnpm run check
 pnpm run build
 ```
+
+## Add an extension
+
+1. Create a package under `extensions/<name>`.
+2. Add its Pi package metadata in that package's `package.json`.
+3. Add release metadata in `release-please-config.json`.

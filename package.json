@@ -1,18 +1,13 @@
 {
-  "name": "pi-local-model-options-extensions",
+  "name": "pi-extensions",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.0.0",
-  "description": "Collection of Pi local model option extensions.",
+  "description": "Monorepo for Pi extensions.",
   "type": "module",
   "license": "MIT",
   "workspaces": [
     "extensions/*"
-  ],
-  "keywords": [
-    "pi-package",
-    "pi-extension",
-    "local-llm"
   ],
   "repository": {
     "type": "git",
@@ -39,11 +34,6 @@
     ],
     "*.{ts,js}": [
       "eslint --fix"
-    ]
-  },
-  "pi": {
-    "extensions": [
-      "./extensions/pi-local-model-options/src/index.ts"
     ]
   },
   "devDependencies": {
