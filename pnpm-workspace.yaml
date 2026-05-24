@@ -1,6 +1,6 @@
-packages:
-  - "extensions/*"
-
 onlyBuiltDependencies:
   - '@google/genai'
   - 'protobufjs'
+
+packages:
+  - "extensions/*"

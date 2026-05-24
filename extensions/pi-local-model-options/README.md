@@ -28,7 +28,7 @@ pi install git:github.com/mohammedhammoud/pi-extensions
 ## Development
 
 ```bash
-npm install
-npm run typecheck
-npm run build
+pnpm install
+pnpm run typecheck
+pnpm run build
 ```
