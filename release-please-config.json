@@ -3,7 +3,7 @@
   "packages": {
     "extensions/pi-local-model-options": {
       "component": "pi-local-model-options",
-      "package-name": "@mohammedhammoud/pi-local-model-options",
+      "package-name": "@mh/pi-local-model-options",
       "release-type": "node"
     }
   }

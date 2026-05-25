@@ -1,4 +1,4 @@
-# @mohammedhammoud/pi-local-model-options
+# @mh/pi-local-model-options
 
 Pi extension for per-model local model options.
 
@@ -16,13 +16,7 @@ Pi extension for per-model local model options.
 From npm:
 
 ```bash
-pi install npm:@mohammedhammoud/pi-local-model-options
-```
-
-From the collection repo:
-
-```bash
-pi install git:github.com/mohammedhammoud/pi-extensions
+pi install npm:@mh/pi-local-model-options
 ```
 
 ## Development

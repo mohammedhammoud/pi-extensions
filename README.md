@@ -4,7 +4,7 @@ Monorepo for Pi extensions.
 
 ## Extensions
 
-- `@mohammedhammoud/pi-local-model-options` — per-model local provider options.
+- `@mh/pi-local-model-options` — per-model local provider options.
 
 ## Development
 

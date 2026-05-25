@@ -1,5 +1,5 @@
 {
-  "name": "@mohammedhammoud/pi-local-model-options",
+  "name": "@mh/pi-local-model-options",
   "version": "0.4.0",
   "description": "Pi extension for per-model local model options.",
   "type": "module",
