@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/mohammedhammoud/pi-extensions/compare/pi-worker-v1.0.0...pi-worker-v1.0.1) (2026-05-25)
+
+
+### Bug Fixes
+
+* use personal npm scope instead of org scope ([10bff68](https://github.com/mohammedhammoud/pi-extensions/commit/10bff68af3589fd40d053d8fe1e272efbe5742bf))
+
 ## 1.0.0 (2026-05-25)
 
 

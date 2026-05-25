@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.4.1...pi-local-model-options-v0.4.2) (2026-05-25)
+
+
+### Bug Fixes
+
+* use personal npm scope instead of org scope ([10bff68](https://github.com/mohammedhammoud/pi-extensions/commit/10bff68af3589fd40d053d8fe1e272efbe5742bf))
+
 ## [0.4.1](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.4.0...pi-local-model-options-v0.4.1) (2026-05-25)
 
 
