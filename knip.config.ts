@@ -5,9 +5,13 @@ const config: KnipConfig = {
     "@earendil-works/pi-coding-agent",
     "@earendil-works/pi-tui",
   ],
+  ignoreExportsUsedInFile: true,
   workspaces: {
     "extensions/pi-local-model-options": {
       project: ["src/**/*.ts", "*.ts"],
+    },
+    "extensions/pi-worker": {
+      project: ["src/**/*.ts", "*.ts", "!src/**/*.test.ts"],
     },
   },
 };
