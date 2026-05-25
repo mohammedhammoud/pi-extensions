@@ -50,7 +50,7 @@ export async function openAndPersistWorkerPanel(
     currentModel,
     state.workerMode ?? "task",
     promptPrefill,
-    state.workerTimeoutMs,
+    state.workerTimeoutMs ?? 0,
     (mode) => setWorkerMode(state, mode),
     persistTimeout,
   );

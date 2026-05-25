@@ -52,16 +52,20 @@ export async function spawnWorker(
     const cancel = createWorkerCancel(child);
     options.onStart?.(cancel);
 
-    const timeoutId = createWorkerTimeout(timeoutMs, cancel, () => {
-      finish({
-        status: "error",
-        stdout,
-        stderr: stderr || `Worker timed out after ${timeoutMs}ms`,
-        assistantText,
-        code: null,
-        durationMs: Date.now() - start,
-      });
-    });
+    const timeoutId = createWorkerTimeout(
+      timeoutMs ?? DISABLED_WORKER_TIMEOUT_MS,
+      cancel,
+      () => {
+        finish({
+          status: "error",
+          stdout,
+          stderr: stderr || `Worker timed out after ${timeoutMs}ms`,
+          assistantText,
+          code: null,
+          durationMs: Date.now() - start,
+        });
+      },
+    );
 
     child.on("error", (error) => {
       finish({
