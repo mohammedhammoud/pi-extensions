@@ -31,7 +31,7 @@ const PANEL_HINT = "↑↓ select • Enter change/continue • Esc cancel";
 const MIN_MODEL_WIDTH = 10;
 const MODEL_VALUE_PADDING = 12;
 const SETTING_LABEL_WIDTH = 8;
-const BLANK_INPUT_LABEL = "blank";
+const NEW_INPUT_LABEL = "-";
 const ERROR_LEVEL = "error";
 
 type WorkerSettingsAction = "model" | "mode" | "timeout" | "input" | "continue";
@@ -78,7 +78,7 @@ export async function openWorkerPanel(
   let inputSource: WorkerInputSource = promptPrefill
     ? "refine-output"
     : "new-task";
-  let inputLabel = promptPrefill ? "Previous output" : BLANK_INPUT_LABEL;
+  let inputLabel = promptPrefill ? "Previous output" : NEW_INPUT_LABEL;
   let nextPromptPrefill = promptPrefill;
   let iterations = 0;
 
@@ -110,7 +110,7 @@ export async function openWorkerPanel(
       if (output === null) {
         selectedOutput = undefined;
         inputSource = "new-task";
-        inputLabel = BLANK_INPUT_LABEL;
+        inputLabel = NEW_INPUT_LABEL;
         nextPromptPrefill = "";
         continue;
       }

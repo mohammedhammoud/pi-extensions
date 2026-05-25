@@ -8,7 +8,7 @@ import {
 } from "../../core/output";
 import { openSearchSelect, type SearchSelectOption } from "./search-select";
 
-const BLANK_INPUT_VALUE = "__blank__";
+const NEW_INPUT_VALUE = "__new__";
 
 export async function hasSavedWorkerOutputs(
   _ctx: ExtensionContext,
@@ -27,19 +27,19 @@ export async function selectWorkerInputOutput(
   const selected = await openSearchSelect(
     ctx,
     "worker input",
-    [createBlankOption(), ...outputs.map(toOption)],
-    { defaultItems: [createBlankOption(), ...shortlist.map(toOption)] },
+    [createNewOption(), ...outputs.map(toOption)],
+    { defaultItems: [createNewOption(), ...shortlist.map(toOption)] },
   );
 
   if (selected === undefined) return undefined;
-  if (selected === BLANK_INPUT_VALUE) return null;
+  if (selected === NEW_INPUT_VALUE) return null;
   return outputs.find((output) => output.id === selected);
 }
 
-function createBlankOption(): SearchSelectOption {
+function createNewOption(): SearchSelectOption {
   return {
-    value: BLANK_INPUT_VALUE,
-    label: "blank",
+    value: NEW_INPUT_VALUE,
+    label: "-",
     searchText: "blank new empty",
   };
 }
