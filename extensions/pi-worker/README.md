@@ -1,4 +1,4 @@
-# @mh/pi-worker
+# @mohammedhammoud/pi-worker
 
 Runs tasks in isolated `pi` CLI worker processes with a configurable TUI panel. Supports 4 modes (task, plan, implement, review), model selection, timeout (2m/5m/10m/off), and input from either a fresh prompt or a previous worker output.
 

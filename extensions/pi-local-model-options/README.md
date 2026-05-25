@@ -1,4 +1,4 @@
-# @mh/pi-local-model-options
+# @mohammedhammoud/pi-local-model-options
 
 Per-model configuration for local LLM providers (Ollama, LM Studio, etc.). Lets you set temperature, top_p, and context window per model, with 3 built-in presets (Precise, Balanced, Exploratory). Options persist to `~/.pi/agent/local-options.json` and are automatically applied when that model is active.
 

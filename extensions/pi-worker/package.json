@@ -1,5 +1,5 @@
 {
-  "name": "@mh/pi-worker",
+  "name": "@mohammedhammoud/pi-worker",
   "version": "1.0.0",
   "description": "Pi extension for spawning isolated worker processes.",
   "type": "module",

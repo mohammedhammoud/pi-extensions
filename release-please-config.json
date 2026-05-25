@@ -3,12 +3,12 @@
   "packages": {
     "extensions/pi-local-model-options": {
       "component": "pi-local-model-options",
-      "package-name": "@mh/pi-local-model-options",
+      "package-name": "@mohammedhammoud/pi-local-model-options",
       "release-type": "node"
     },
     "extensions/pi-worker": {
       "component": "pi-worker",
-      "package-name": "@mh/pi-worker",
+      "package-name": "@mohammedhammoud/pi-worker",
       "release-type": "node"
     }
   }
