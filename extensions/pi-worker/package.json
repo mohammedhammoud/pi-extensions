@@ -1,6 +1,6 @@
 {
   "name": "@mh/pi-worker",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Pi extension for spawning isolated worker processes.",
   "type": "module",
   "license": "MIT",

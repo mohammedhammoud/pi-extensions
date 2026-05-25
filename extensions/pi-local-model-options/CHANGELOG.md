@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.4.0...pi-local-model-options-v0.4.1) (2026-05-25)
+
+
+### Bug Fixes
+
+* rename pi-local-model-options to @mh/pi-local-model-options ([566309c](https://github.com/mohammedhammoud/pi-extensions/commit/566309cb039154f4a398e9ef32f2c55f40f7ff68))
+
 ## [0.4.0](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.3.1...pi-local-model-options-v0.4.0) (2026-05-24)
 
 
