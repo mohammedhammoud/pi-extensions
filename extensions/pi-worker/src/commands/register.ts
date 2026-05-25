@@ -3,9 +3,7 @@ import type {
   ExtensionCommandContext,
 } from "@earendil-works/pi-coding-agent";
 import { isWorkerBusy, type ExtensionState } from "../core/state";
-import { buildWorkerTask, parseCommandArgs } from "./task";
-import { getWorkerRefineError, buildWorkerPromptPrefill } from "./refine";
-import { handleWorkerOutputs } from "./outputs";
+import { buildWorkerTask } from "./task";
 import { openAndPersistWorkerPanel, runWorkerTask } from "./run";
 
 const COMMAND_NAME = "worker";
@@ -13,7 +11,6 @@ const COMMAND_DESCRIPTION = "Run a task in an isolated worker session";
 const BUSY_MESSAGE = "Worker already running";
 const STREAMING_MESSAGE = "Wait for current turn to finish";
 const WARNING_LEVEL = "warning";
-const ERROR_LEVEL = "error";
 
 export function registerWorkerCommand(
   pi: ExtensionAPI,
@@ -32,17 +29,7 @@ export function registerWorkerCommand(
         return;
       }
 
-      const parsed = parseCommandArgs(args);
-      if (await handleWorkerOutputs(pi, parsed.action, ctx)) return;
-
-      const promptPrefill = await buildWorkerPromptPrefill(parsed, ctx);
-      const refineError = getWorkerRefineError(parsed, promptPrefill);
-      if (refineError) {
-        ctx.ui.notify(refineError, ERROR_LEVEL);
-        return;
-      }
-
-      const panel = await openAndPersistWorkerPanel(state, ctx, promptPrefill);
+      const panel = await openAndPersistWorkerPanel(state, ctx, undefined);
       if (!panel) return;
 
       await runWorkerTask(

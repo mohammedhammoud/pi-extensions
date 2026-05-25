@@ -11,7 +11,6 @@ const OUTPUT_FILE_EXT = ".md";
 const JSON_EXT = ".json";
 const MS_PER_SECOND = 1000;
 const TIMESTAMP_PAD_LENGTH = 2;
-const DEFAULT_PREVIEW_CHARS = 1200;
 const MAX_LIST_ITEMS = 20;
 const DEFAULT_PICKER_SHORTLIST_ITEMS = 10;
 const PROMPT_PREVIEW_LIMIT = 160;
@@ -19,9 +18,6 @@ const OUTPUTS_DIR = "outputs";
 const META_DIR = "meta";
 const REPOS_DIR = "repos";
 const INDEX_FILE = "index.json";
-const NO_OUTPUTS_MESSAGE = "No worker outputs yet.";
-const OUTPUT_LIST_TITLE = "Worker outputs:";
-const REFINE_USAGE_MESSAGE = "Use: /worker refine <path>";
 
 export interface WorkerOutput {
   id: string;
@@ -160,70 +156,8 @@ export async function listAllWorkerOutputs(
   return limit > 0 ? resolvedOutputs.slice(0, limit) : resolvedOutputs;
 }
 
-export async function resolveWorkerOutputPath(
-  cwd: string,
-  inputPath: string,
-): Promise<WorkerOutput | undefined> {
-  const trimmed = inputPath.trim();
-  if (!trimmed) return undefined;
-
-  const metaOutput = await readWorkerOutputMeta(trimmed, cwd);
-  if (metaOutput) return metaOutput;
-
-  const candidate = path.isAbsolute(trimmed)
-    ? trimmed
-    : path.resolve(cwd, trimmed);
-
-  try {
-    const info = await stat(candidate);
-    if (!info.isFile()) return undefined;
-    return {
-      id: path.basename(candidate, path.extname(candidate)),
-      path: candidate,
-      relativePath: path.relative(cwd, candidate) || candidate,
-      createdAt: info.mtimeMs,
-      updatedAt: info.mtimeMs,
-      repoId: createStableId(candidate),
-      repoName: path.basename(cwd),
-      modelKey: "unknown",
-      mode: "task",
-      status: "success",
-      promptPreview: "",
-      sourceType: "new-task",
-      available: true,
-    };
-  } catch {
-    return undefined;
-  }
-}
-
-export async function readWorkerOutputPreview(
-  outputPath: string,
-  maxChars = DEFAULT_PREVIEW_CHARS,
-): Promise<string> {
-  const content = await readFile(outputPath, "utf8");
-  return content.length > maxChars
-    ? `${content.slice(0, maxChars)}...`
-    : content;
-}
-
 export function buildReuseOutputPrompt(output: WorkerOutput): string {
   return `Use the existing worker output file at "${output.path}" as input.\n`;
-}
-
-export function formatWorkerOutputList(outputs: WorkerOutput[]): string {
-  if (outputs.length === 0) {
-    return NO_OUTPUTS_MESSAGE;
-  }
-
-  return [
-    OUTPUT_LIST_TITLE,
-    ...outputs.map(
-      (output, index) => `${index + 1}. ${formatWorkerOutputLabel(output)}`,
-    ),
-    "",
-    REFINE_USAGE_MESSAGE,
-  ].join("\n");
 }
 
 export function formatWorkerOutputLabel(output: WorkerOutput): string {

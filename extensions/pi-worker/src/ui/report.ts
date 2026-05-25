@@ -133,24 +133,6 @@ export function createWorkerFinishMessage(
   };
 }
 
-export function createWorkerListMessage(content: string): {
-  customType: string;
-  content: string;
-  display: true;
-  details: WorkerMessageDetails;
-} {
-  return {
-    customType: WORKER_MESSAGE_TYPE,
-    content,
-    display: true,
-    details: {
-      kind: "list",
-      summary: content,
-      output: content,
-    },
-  };
-}
-
 function formatReport(
   modelKey: string,
   outputPath: string,

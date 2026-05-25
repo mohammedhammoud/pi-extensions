@@ -7,7 +7,6 @@ import {
   buildReuseOutputPrompt,
   formatWorkerOutputLabel,
   listWorkerOutputs,
-  resolveWorkerOutputPath,
   saveWorkerOutput,
 } from "./output";
 
@@ -63,8 +62,6 @@ test("saveWorkerOutput stores global outputs and lists current repo first", asyn
     assert.equal(listed[1]?.id, first.id);
     assert.match(formatWorkerOutputLabel(listed[0]!), /model-b/);
 
-    const resolved = await resolveWorkerOutputPath(repo, second.id);
-    assert.equal(resolved?.path, second.path);
     assert.match(
       buildReuseOutputPrompt(second),
       /Use the existing worker output file at/,
