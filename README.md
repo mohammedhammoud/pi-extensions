@@ -5,6 +5,7 @@ Monorepo for Pi extensions.
 ## Extensions
 
 - `@mh/pi-local-model-options` — per-model local provider options.
+- `@mh/pi-worker` — isolated CLI worker processes with a configurable TUI panel.
 
 ## Development
 

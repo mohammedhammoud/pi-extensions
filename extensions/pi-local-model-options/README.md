@@ -1,28 +1,15 @@
 # @mh/pi-local-model-options
 
-Pi extension for per-model local model options.
+Per-model configuration for local LLM providers (Ollama, LM Studio, etc.). Lets you set temperature, top_p, and context window per model, with 3 built-in presets (Precise, Balanced, Exploratory). Options persist to `~/.pi/agent/local-options.json` and are automatically applied when that model is active.
 
-## Features
+## Why useful
 
-- `/local` command
-- Settings-style UI for the active model
-- Config saved per `provider/model`
-- Status line only when active config is enabled
-- Request patching only for the active enabled model
-- Presets: precise, balanced, exploratory
+Local providers often need different settings for different tasks — a coding model needs lower temperature than a brainstorming model. This extension lets you tune each model independently without touching config files, and the status indicator in the UI shows at a glance which models have custom options.
 
-## Install
+Built with limited context windows in mind. Different models, different needs.
 
-From npm:
+## Usage
 
-```bash
-pi install npm:@mh/pi-local-model-options
-```
-
-## Development
-
-```bash
-pnpm install
-pnpm run typecheck
-pnpm run build
-```
+- `/local` — open the options panel for the active model
+- Presets: Precise (low temp, deterministic), Balanced (default), Exploratory (high temp, creative)
+- Manual: set `enabled`, `temperature` (0–2), `top_p` (0–1), `num_ctx` (≥1024)
