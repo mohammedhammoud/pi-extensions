@@ -1,9 +1,8 @@
 import type { ExtensionCommandContext } from "@earendil-works/pi-coding-agent";
-import type { ExtensionState } from "../core/state";
-import { getModelKey } from "../core/state";
+import { getModelKey, type ExtensionState } from "../core/session";
+import { WORKER_UI_KEY } from "./copy";
 import { formatWorkerWidget } from "./report";
 
-const WORKER_KEY = "pi-worker";
 const WIDGET_PLACEMENT = "aboveEditor";
 const WIDGET_INTERVAL_MS = 250;
 
@@ -42,8 +41,8 @@ export function renderWorkerUi(
   const widgetLines = formatWorkerWidget(state.worker);
   const widgetText = widgetLines.join("\n");
 
-  ctx.ui.setStatus(WORKER_KEY, getModelKey(state.worker.model));
-  ctx.ui.setWidget(WORKER_KEY, widgetLines, {
+  ctx.ui.setStatus(WORKER_UI_KEY, getModelKey(state.worker.model));
+  ctx.ui.setWidget(WORKER_UI_KEY, widgetLines, {
     placement: WIDGET_PLACEMENT,
   });
 
@@ -53,6 +52,6 @@ export function renderWorkerUi(
 export function clearWorkerUi(ctx: {
   ui: ExtensionCommandContext["ui"];
 }): void {
-  ctx.ui.setStatus(WORKER_KEY, undefined);
-  ctx.ui.setWidget(WORKER_KEY, undefined);
+  ctx.ui.setStatus(WORKER_UI_KEY, undefined);
+  ctx.ui.setWidget(WORKER_UI_KEY, undefined);
 }

@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
-import type { ActiveModel } from "../core/state";
-import { getModelKey } from "../core/state";
+import type { ActiveModel } from "../core/session";
+import { getModelKey } from "../core/session";
 import { guardedDrainLineBuffer } from "./buffer";
 import { parseStdoutLine, type ParsedStdoutLine } from "./events";
 import type { SpawnWorkerOptions, WorkerResult } from "./types";

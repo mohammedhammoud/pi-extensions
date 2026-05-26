@@ -1,4 +1,4 @@
-import type { ActiveModel } from "../core/state";
+import type { ActiveModel } from "../core/session";
 
 export interface WorkerUpdate {
   assistantText?: string;
@@ -19,11 +19,6 @@ export interface SpawnWorkerOptions {
   cwd: string;
   model: ActiveModel;
   prompt: string;
-  /**
-   * Timeout in milliseconds.
-   * `undefined` or `<= 0` = no timeout.
-   * `> 0` = timeout after the given duration.
-   */
   timeoutMs: number | undefined;
   onStart?(cancel: () => void): void;
   onUpdate?(update: WorkerUpdate): void;

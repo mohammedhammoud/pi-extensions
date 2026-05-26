@@ -11,7 +11,10 @@ interface WorkerEvent {
   toolName?: string;
   args?: unknown;
   isError?: boolean;
-  message?: { role: string; content?: unknown };
+  message?: {
+    role: string;
+    content?: unknown;
+  };
   assistantMessageEvent?: { type: string; delta?: string };
 }
 

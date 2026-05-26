@@ -38,17 +38,26 @@ test("parseStdoutLine handles plain text and assistant deltas", () => {
   });
   assert.deepEqual(parseStdoutLine(delta, "x"), {
     nextAssistantText: "xabc",
-    emit: { assistantText: "xabc", stdoutLine: "assistant writing" },
+    emit: {
+      assistantText: "xabc",
+      stdoutLine: "assistant writing",
+    },
   });
 });
 
 test("parseStdoutLine handles assistant message end", () => {
   const end = JSON.stringify({
     type: "message_end",
-    message: { role: "assistant", content: [{ type: "text", text: "done" }] },
+    message: {
+      role: "assistant",
+      content: [{ type: "text", text: "done" }],
+    },
   });
   assert.deepEqual(parseStdoutLine(end, "prev"), {
     nextAssistantText: "done",
-    emit: { assistantText: "done", stdoutLine: "assistant finished" },
+    emit: {
+      assistantText: "done",
+      stdoutLine: "assistant finished",
+    },
   });
 });

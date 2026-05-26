@@ -2,15 +2,18 @@ import type {
   ExtensionAPI,
   ExtensionCommandContext,
 } from "@earendil-works/pi-coding-agent";
-import { isWorkerBusy, type ExtensionState } from "../core/state";
-import { buildWorkerTask } from "./task";
-import { openAndPersistWorkerPanel, runWorkerTask } from "./run";
+import { isWorkerBusy, type ExtensionState } from "../core/session";
+import { WORKER_MESSAGES } from "../ui/copy";
+import { compileWorkerRequest } from "../worker/request";
+import {
+  openAndPersistWorkerPanel,
+  runWorkerRequest,
+} from "../worker/run-flow";
 
 const COMMAND_NAME = "worker";
 const COMMAND_DESCRIPTION = "Run a task in an isolated worker session";
-const BUSY_MESSAGE = "Worker already running";
-const STREAMING_MESSAGE = "Wait for current turn to finish";
 const WARNING_LEVEL = "warning";
+const ERROR_LEVEL = "error";
 
 export function registerWorkerCommand(
   pi: ExtensionAPI,
@@ -18,30 +21,27 @@ export function registerWorkerCommand(
 ): void {
   pi.registerCommand(COMMAND_NAME, {
     description: COMMAND_DESCRIPTION,
-    handler: async (args: string, ctx: ExtensionCommandContext) => {
+    handler: async (_args: string, ctx: ExtensionCommandContext) => {
       if (isWorkerBusy(state)) {
-        ctx.ui.notify(BUSY_MESSAGE, WARNING_LEVEL);
+        ctx.ui.notify(WORKER_MESSAGES.busy, WARNING_LEVEL);
         return;
       }
 
       if (!ctx.isIdle()) {
-        ctx.ui.notify(STREAMING_MESSAGE, WARNING_LEVEL);
+        ctx.ui.notify(WORKER_MESSAGES.waitForIdle, WARNING_LEVEL);
         return;
       }
 
-      const panel = await openAndPersistWorkerPanel(state, ctx, undefined);
-      if (!panel) return;
+      const draft = await openAndPersistWorkerPanel(state, ctx);
+      if (!draft) return;
 
-      await runWorkerTask(
-        pi,
-        state,
-        ctx,
-        panel.model,
-        panel.mode,
-        panel.timeoutMs,
-        buildWorkerTask(panel.mode, panel.prompt),
-        panel.sourceType,
-      );
+      const request = compileWorkerRequest(draft);
+      if (!request) {
+        ctx.ui.notify(WORKER_MESSAGES.promptEmpty, ERROR_LEVEL);
+        return;
+      }
+
+      await runWorkerRequest(pi, state, ctx, request);
     },
   });
 }
