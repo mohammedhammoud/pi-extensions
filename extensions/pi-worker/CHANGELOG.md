@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/mohammedhammoud/pi-extensions/compare/pi-worker-v1.1.0...pi-worker-v1.1.1) (2026-05-26)
+
+
+### Bug Fixes
+
+* update package exports to reference dist instead of src ([e994583](https://github.com/mohammedhammoud/pi-extensions/commit/e994583ee7cbc4e2f61821f33b17f31fe04e4a89))
+
 ## [1.1.0](https://github.com/mohammedhammoud/pi-extensions/compare/pi-worker-v1.0.1...pi-worker-v1.1.0) (2026-05-26)
 
 
