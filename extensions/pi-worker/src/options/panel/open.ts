@@ -1,97 +1,78 @@
-import type { ExtensionContext, Theme } from "@earendil-works/pi-coding-agent";
-import { Key, matchesKey, truncateToWidth } from "@earendil-works/pi-tui";
+import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
+import { Key, matchesKey } from "@earendil-works/pi-tui";
+import type { ActiveModel } from "../../core/session";
 import {
-  buildReuseOutputPrompt,
-  formatWorkerOutputLabel,
-  type WorkerOutput,
-} from "../../core/output";
-import type { ActiveModel, WorkerMode } from "../../core/state";
-import { hasSavedWorkerOutputs, selectWorkerInputOutput } from "./input-picker";
+  cycleWorkerMode,
+  requiresWorkerPlan,
+  showsWorkerPlan,
+  type WorkerMode,
+} from "../../core/mode/definition";
+import { WORKER_MESSAGES, WORKER_PANEL_COPY } from "../../ui/copy";
 import {
   getSelectableModels,
   pickInitialModel,
   selectWorkerModel,
   type ModelInfo,
-} from "./models";
+} from "../model/select";
+import { selectWorkerPlan } from "../plan/picker";
 import {
-  cycleWorkerMode,
-  cycleWorkerTimeout,
-  formatTimeout,
-  type WorkerTimeoutMs,
-} from "./timeout";
+  createWorkerSettingRows,
+  getModeColor,
+  type WorkerSettingsAction,
+  type WorkerSettingsViewState,
+  renderSettingsLine,
+  truncateRowValue,
+} from "./rows";
+import { cycleWorkerTimeout, type WorkerTimeoutMs } from "../timeout/timeout";
+import type { WorkerRequestDraft } from "../../worker/request";
+import type { WorkerPlan } from "../../artifacts/plans/store";
+import { getWorkerPlanDisplayName } from "../../artifacts/plans/labels";
 
 const MAX_PANEL_ITERATIONS = 100;
-const NO_MODELS_MESSAGE = "No models available";
-const MODEL_LABEL = "Model";
-const MODE_LABEL = "Mode";
-const TIMEOUT_LABEL = "Timeout";
-const INPUT_LABEL = "Input";
-const CONTINUE_LABEL = "Continue";
-const PANEL_HINT = "↑↓ select • Enter change/continue • Esc cancel";
-const MIN_MODEL_WIDTH = 10;
-const MODEL_VALUE_PADDING = 12;
-const SETTING_LABEL_WIDTH = 8;
-const NEW_INPUT_LABEL = "-";
 const ERROR_LEVEL = "error";
 
-type WorkerSettingsAction = "model" | "mode" | "timeout" | "input" | "continue";
-type WorkerInputSource = "new-task" | "refine-output";
-
-interface WorkerSettingRow {
-  action: WorkerSettingsAction;
-  label: string;
-  value: string;
-  idleTone?: "accent" | "warning" | "success" | "error" | "muted" | "text";
-  selectedTone?: "accent" | "warning" | "success" | "error" | "muted" | "text";
-}
-
-export interface WorkerPanelResult {
+interface WorkerPanelState {
   model: ModelInfo;
   mode: WorkerMode;
-  prompt: string;
   timeoutMs: WorkerTimeoutMs;
-  sourceType: WorkerInputSource;
-  selectedOutput?: WorkerOutput;
+  selectedPlan: WorkerPlan | undefined;
 }
 
 export async function openWorkerPanel(
   ctx: ExtensionContext,
   currentModel: ActiveModel | undefined,
   currentMode: WorkerMode,
-  promptPrefill = "",
   currentTimeoutMs: WorkerTimeoutMs,
   onModeChange?: (mode: WorkerMode) => void,
   onTimeoutChange?: (timeoutMs: WorkerTimeoutMs) => void,
-): Promise<WorkerPanelResult | undefined> {
+): Promise<WorkerRequestDraft | undefined> {
   const models = getSelectableModels(ctx, currentModel);
   if (models.length === 0) {
-    ctx.ui.notify(NO_MODELS_MESSAGE, ERROR_LEVEL);
+    ctx.ui.notify(WORKER_MESSAGES.noModels, ERROR_LEVEL);
     return undefined;
   }
 
-  const showInput =
-    promptPrefill.length > 0 || (await hasSavedWorkerOutputs(ctx));
-  let model = pickInitialModel(models, currentModel);
-  let mode: WorkerMode = currentMode;
-  let timeoutMs: WorkerTimeoutMs = currentTimeoutMs;
-  let selectedOutput: WorkerOutput | undefined;
-  let inputSource: WorkerInputSource = promptPrefill
-    ? "refine-output"
-    : "new-task";
-  let inputLabel = promptPrefill ? "Previous output" : NEW_INPUT_LABEL;
-  let nextPromptPrefill = promptPrefill;
-  let iterations = 0;
+  const state: WorkerPanelState = {
+    model: pickInitialModel(models, currentModel),
+    mode: currentMode,
+    timeoutMs: currentTimeoutMs,
+    selectedPlan: undefined,
+  };
 
+  let iterations = 0;
   while (iterations++ < MAX_PANEL_ITERATIONS) {
     const action = await openWorkerSettings(
       ctx,
-      createWorkerSettingRows(model, mode, timeoutMs, inputLabel, showInput),
+      toViewState(state),
       (nextMode) => {
-        mode = nextMode;
+        state.mode = nextMode;
+        if (!showsWorkerPlan(nextMode)) {
+          state.selectedPlan = undefined;
+        }
         onModeChange?.(nextMode);
       },
       (nextTimeoutMs) => {
-        timeoutMs = nextTimeoutMs;
+        state.timeoutMs = nextTimeoutMs;
         onTimeoutChange?.(nextTimeoutMs);
       },
     );
@@ -99,39 +80,32 @@ export async function openWorkerPanel(
     if (!action) return undefined;
 
     if (action === "model") {
-      const nextModel = await selectWorkerModel(ctx, models, model);
-      if (nextModel) model = nextModel;
+      const nextModel = await selectWorkerModel(ctx, models, state.model);
+      if (nextModel) state.model = nextModel;
       continue;
     }
 
-    if (action === "input") {
-      const output = await selectWorkerInputOutput(ctx);
-      if (output === undefined) continue;
-      if (output === null) {
-        selectedOutput = undefined;
-        inputSource = "new-task";
-        inputLabel = NEW_INPUT_LABEL;
-        nextPromptPrefill = "";
-        continue;
-      }
-
-      selectedOutput = output;
-      inputSource = "refine-output";
-      inputLabel = formatWorkerOutputLabel(output);
-      nextPromptPrefill = buildReuseOutputPrompt(output);
+    if (action === "plan") {
+      const plan = await selectWorkerPlan(ctx);
+      if (plan === undefined) continue;
+      state.selectedPlan = plan ?? undefined;
       continue;
     }
 
-    const prompt = await ctx.ui.editor(`worker · ${mode}`, nextPromptPrefill);
+    if (requiresWorkerPlan(state.mode) && !state.selectedPlan) {
+      ctx.ui.notify(WORKER_MESSAGES.planRequired, ERROR_LEVEL);
+      continue;
+    }
+
+    const prompt = await ctx.ui.editor(`worker · ${state.mode}`);
     if (prompt === undefined) return undefined;
 
     return {
-      model,
-      mode,
+      model: state.model,
+      mode: state.mode,
       prompt,
-      timeoutMs,
-      sourceType: inputSource,
-      ...(selectedOutput ? { selectedOutput } : {}),
+      timeoutMs: state.timeoutMs,
+      ...(state.selectedPlan ? { selectedPlan: state.selectedPlan } : {}),
     };
   }
 
@@ -140,20 +114,26 @@ export async function openWorkerPanel(
 
 function openWorkerSettings(
   ctx: ExtensionContext,
-  rows: WorkerSettingRow[],
+  initialState: WorkerSettingsViewState,
   setMode: (mode: WorkerMode) => void,
   setTimeoutMs: (timeoutMs: WorkerTimeoutMs) => void,
 ): Promise<WorkerSettingsAction | undefined> {
   return ctx.ui.custom<WorkerSettingsAction | undefined>(
     (tui, theme, _kb, done) => {
       let selectedIndex = 0;
-      let currentMode = getModeFromRows(rows);
-      let currentTimeoutMs = getTimeoutFromRows(rows);
+      let viewState = initialState;
+      let rows = createWorkerSettingRows(viewState);
 
-      const render = (width: number): string[] => {
-        const color = getModeColor(currentMode);
-        return [
-          theme.fg(color, theme.bold(`worker · ${currentMode}`)),
+      const rebuildRows = (): void => {
+        rows = createWorkerSettingRows(viewState);
+        if (selectedIndex >= rows.length) {
+          selectedIndex = rows.length - 1;
+        }
+      };
+
+      return {
+        render: (width: number): string[] => [
+          theme.fg(getModeColor(viewState), theme.bold("⚙ worker")),
           ...rows.map((row, index) =>
             renderSettingsLine(
               theme,
@@ -164,12 +144,8 @@ function openWorkerSettings(
               row.selectedTone,
             ),
           ),
-          theme.fg("dim", PANEL_HINT),
-        ];
-      };
-
-      return {
-        render,
+          theme.fg("dim", WORKER_PANEL_COPY.hint),
+        ],
         invalidate: () => undefined,
         handleInput: (data: string) => {
           if (matchesKey(data, Key.escape)) {
@@ -199,19 +175,20 @@ function openWorkerSettings(
           if (!selectedRow) return;
 
           if (selectedRow.action === "mode") {
-            currentMode = cycleWorkerMode(currentMode);
-            setMode(currentMode);
-            const modeRow = rows.find((r) => r.action === "mode");
-            if (modeRow) modeRow.value = currentMode;
+            viewState = { ...viewState, mode: cycleWorkerMode(viewState.mode) };
+            setMode(viewState.mode);
+            rebuildRows();
             tui.requestRender();
             return;
           }
 
           if (selectedRow.action === "timeout") {
-            currentTimeoutMs = cycleWorkerTimeout(currentTimeoutMs);
-            setTimeoutMs(currentTimeoutMs);
-            const timeoutRow = rows.find((r) => r.action === "timeout");
-            if (timeoutRow) timeoutRow.value = formatTimeout(currentTimeoutMs);
+            viewState = {
+              ...viewState,
+              timeoutMs: cycleWorkerTimeout(viewState.timeoutMs),
+            };
+            setTimeoutMs(viewState.timeoutMs);
+            rebuildRows();
             tui.requestRender();
             return;
           }
@@ -223,112 +200,15 @@ function openWorkerSettings(
   );
 }
 
-function createWorkerSettingRows(
-  model: ModelInfo,
-  mode: WorkerMode,
-  timeoutMs: WorkerTimeoutMs,
-  inputLabel: string,
-  showInput: boolean,
-): WorkerSettingRow[] {
-  return [
-    {
-      action: "model",
-      label: MODEL_LABEL,
-      value: model.label,
-    },
-    {
-      action: "mode",
-      label: MODE_LABEL,
-      value: mode,
-    },
-    {
-      action: "timeout",
-      label: TIMEOUT_LABEL,
-      value: formatTimeout(timeoutMs),
-    },
-    ...(showInput
-      ? [
-          {
-            action: "input",
-            label: INPUT_LABEL,
-            value: inputLabel,
-          } satisfies WorkerSettingRow,
-        ]
-      : []),
-    {
-      action: "continue",
-      label: CONTINUE_LABEL,
-      value: "",
-      idleTone: "warning",
-      selectedTone: "success",
-    },
-  ];
-}
-
-function getModeFromRows(rows: WorkerSettingRow[]): WorkerMode {
-  return (
-    (rows.find((row) => row.action === "mode")?.value as
-      | WorkerMode
-      | undefined) ?? "task"
-  );
-}
-
-function getTimeoutFromRows(rows: WorkerSettingRow[]): WorkerTimeoutMs {
-  const value = rows.find((row) => row.action === "timeout")?.value;
-  if (value === "2m") return 2 * 60_000;
-  if (value === "5m") return 5 * 60_000;
-  if (value === "10m") return 10 * 60_000;
-  return 0;
-}
-
-function truncateRowValue(row: WorkerSettingRow, width: number): string {
-  if (!row.value) return row.value;
-  return truncateToWidth(
-    row.value,
-    Math.max(MIN_MODEL_WIDTH, width - MODEL_VALUE_PADDING),
-  );
-}
-
-function getModeColor(
-  mode: WorkerMode,
-): "accent" | "warning" | "success" | "error" | "muted" {
-  const colors: Record<
-    WorkerMode,
-    "accent" | "warning" | "success" | "error" | "muted"
-  > = {
-    task: "muted",
-    plan: "warning",
-    implement: "success",
-    review: "error",
+function toViewState(state: WorkerPanelState): WorkerSettingsViewState {
+  return {
+    modelLabel: state.model.label,
+    mode: state.mode,
+    timeoutMs: state.timeoutMs,
+    planLabel: state.selectedPlan
+      ? getWorkerPlanDisplayName(state.selectedPlan)
+      : WORKER_PANEL_COPY.noPlan,
   };
-  return colors[mode];
 }
 
-function renderSettingsLine(
-  theme: Theme,
-  label: string,
-  value: string,
-  selected: boolean,
-  idleTone:
-    | "accent"
-    | "warning"
-    | "success"
-    | "error"
-    | "muted"
-    | "text" = "text",
-  selectedTone:
-    | "accent"
-    | "warning"
-    | "success"
-    | "error"
-    | "muted"
-    | "text" = "accent",
-): string {
-  const prefix = selected ? "→ " : "  ";
-  const labelText = `${prefix}${label.padEnd(SETTING_LABEL_WIDTH, " ")}`;
-  const labelTone = selected ? selectedTone : idleTone;
-  const valueTone = selected ? selectedTone : idleTone;
-  return `${theme.fg(labelTone, labelText)} ${theme.fg(valueTone, value)}`;
-}
-
-export type { WorkerTimeoutMs } from "./timeout";
+export type { WorkerTimeoutMs } from "../timeout/timeout";

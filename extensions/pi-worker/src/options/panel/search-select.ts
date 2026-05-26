@@ -8,13 +8,14 @@ import {
   Text,
   type SelectItem,
 } from "@earendil-works/pi-tui";
+import { SEARCH_SELECT_HINT } from "../../ui/copy";
 
 const LIST_HEIGHT = 12;
-const HINT_TEXT = "type to filter • Enter select • Esc cancel";
 
 export interface SearchSelectOption {
   value: string;
   label: string;
+  description?: string;
   searchText?: string;
 }
 
@@ -39,7 +40,7 @@ export async function openSearchSelect(
     const input = new Input();
     const container = new Container();
     const titleText = new Text(theme.fg("accent", theme.bold(title)));
-    const hintText = new Text(theme.fg("dim", HINT_TEXT));
+    const hintText = new Text(theme.fg("dim", SEARCH_SELECT_HINT));
     let list = createSelectList(defaultItems, theme, done);
 
     input.focused = true;
@@ -90,7 +91,9 @@ function toSelectItem(item: string | SearchSelectOption): IndexedSelectItem {
   return {
     value: item.value,
     label: item.label,
-    searchText: `${item.label} ${item.searchText ?? ""}`.toLowerCase(),
+    ...(item.description ? { description: item.description } : {}),
+    searchText:
+      `${item.label} ${item.description ?? ""} ${item.searchText ?? ""}`.toLowerCase(),
   };
 }
 

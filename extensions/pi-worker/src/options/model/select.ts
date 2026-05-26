@@ -1,7 +1,7 @@
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
-import type { ActiveModel } from "../../core/state";
-import { getModelKey } from "../../core/state";
-import { openSearchSelect } from "./search-select";
+import type { ActiveModel } from "../../core/session";
+import { getModelKey } from "../../core/session";
+import { openSearchSelect } from "../panel/search-select";
 
 export interface ModelInfo extends ActiveModel {
   label: string;
@@ -56,6 +56,9 @@ function toModelInfo(model: ActiveModel): ModelInfo {
     provider: model.provider,
     id: model.id,
     label: getModelKey(model),
+    ...(model.contextWindow !== undefined
+      ? { contextWindow: model.contextWindow }
+      : {}),
   };
 }
 
