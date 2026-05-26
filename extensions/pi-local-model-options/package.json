@@ -16,7 +16,6 @@
     "directory": "extensions/pi-local-model-options"
   },
   "files": [
-    "src",
     "dist",
     "README.md",
     "LICENSE"
@@ -37,7 +36,7 @@
   },
   "pi": {
     "extensions": [
-      "./src/index.ts"
+      "./dist/index.mjs"
     ]
   },
   "peerDependencies": {

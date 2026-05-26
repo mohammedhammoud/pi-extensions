@@ -15,7 +15,6 @@
     "directory": "extensions/pi-worker"
   },
   "files": [
-    "src",
     "dist",
     "README.md",
     "LICENSE"
@@ -37,7 +36,7 @@
   },
   "pi": {
     "extensions": [
-      "./src/index.ts"
+      "./dist/index.mjs"
     ]
   },
   "peerDependencies": {
