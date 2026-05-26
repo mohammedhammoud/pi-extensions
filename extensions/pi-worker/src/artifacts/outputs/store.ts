@@ -2,16 +2,13 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { WorkerResult } from "../../worker/types";
 import {
-  DEFAULT_PICKER_SHORTLIST_ITEMS,
   FRIENDLY_NAME_LIMIT,
   JSON_EXT,
   MAX_LIST_ITEMS,
   PROMPT_PREVIEW_LIMIT,
   STORE_VERSION,
-  dedupeArtifacts,
   isArtifactMetaBase,
   readArtifactIds,
-  readRecentArtifactRefs,
   updateArtifactIndexes,
 } from "../../core/storage/artifact-index";
 import {
@@ -155,39 +152,9 @@ export async function listWorkerOutputs(cwd: string): Promise<WorkerOutput[]> {
   ).slice(0, MAX_LIST_ITEMS);
 }
 
-export async function listAllWorkerOutputs(
-  limit = MAX_LIST_ITEMS,
-): Promise<WorkerOutput[]> {
-  await ensureWorkerStorageLayout();
-
-  const refs = await readRecentArtifactRefs(getOutputIndexPath());
-  if (!refs) return [];
-
-  const candidates = limit > 0 ? refs.slice(0, limit * 4) : refs;
-  const outputs = await Promise.all(
-    candidates.map(
-      async (entry) =>
-        await readWorkerOutputMeta(entry.repoId, entry.artifactId),
-    ),
-  );
-
-  const resolvedOutputs = sortRecent(
-    outputs.filter((output): output is WorkerOutput => output !== undefined),
-  );
-  return limit > 0 ? resolvedOutputs.slice(0, limit) : resolvedOutputs;
-}
-
 export function formatWorkerOutputLabel(output: WorkerOutput): string {
   const title = output.friendlyName || path.basename(output.path);
   return `${title} · ${output.repoName} · ${output.modelKey} · ${output.mode} · ${output.status}`;
-}
-
-export function getDefaultOutputPickerShortlist(
-  repoOutputs: WorkerOutput[],
-  allOutputs: WorkerOutput[],
-  limit = DEFAULT_PICKER_SHORTLIST_ITEMS,
-): WorkerOutput[] {
-  return dedupeArtifacts([...repoOutputs, ...allOutputs]).slice(0, limit);
 }
 
 async function readWorkerOutputMeta(
