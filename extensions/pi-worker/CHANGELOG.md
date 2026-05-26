@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/mohammedhammoud/pi-extensions/compare/pi-worker-v1.0.1...pi-worker-v1.1.0) (2026-05-26)
+
+
+### Features
+
+* **pi-worker:** add persisted plan and output artifacts ([9316b4f](https://github.com/mohammedhammoud/pi-extensions/commit/9316b4f15e9e2475cd791284506702834ac5cda5))
+* **pi-worker:** refresh worker ui and extension wiring ([47e5f00](https://github.com/mohammedhammoud/pi-extensions/commit/47e5f0022d4ac2fd7be6460599c16f165c4b275d))
+
 ## [1.0.1](https://github.com/mohammedhammoud/pi-extensions/compare/pi-worker-v1.0.0...pi-worker-v1.0.1) (2026-05-25)
 
 
