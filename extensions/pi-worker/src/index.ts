@@ -8,17 +8,18 @@ import {
   getContextModel,
   isWorkerBusy,
   setActiveModel,
-} from "./core/state";
-import { clearWorkerUi } from "./ui/status";
-import { loadWorkerSettings } from "./store";
-import { createWorkerMessageRenderer, WORKER_MESSAGE_TYPE } from "./ui/report";
+} from "./core/session";
+import { loadWorkerSettings } from "./core/storage/settings";
 import { registerWorkerCommand } from "./commands/register";
+import { WORKER_MESSAGES, WORKER_UI_KEY } from "./ui/copy";
+import { installWorkerEditor } from "./ui/editor";
+import { createWorkerMessageRenderer } from "./ui/report";
+import { clearWorkerUi } from "./ui/status";
 
 const SESSION_START_EVENT = "session_start";
 const SESSION_SHUTDOWN_EVENT = "session_shutdown";
 const MODEL_SELECT_EVENT = "model_select";
 const INPUT_EVENT = "input";
-const BUSY_MESSAGE = "Worker already running";
 const WARNING_LEVEL = "warning";
 
 export default function workerExtension(pi: ExtensionAPI): void {
@@ -28,14 +29,14 @@ export default function workerExtension(pi: ExtensionAPI): void {
       ? { workerTimeoutMs: workerSettings.timeoutMs }
       : {},
   );
+  let restoreWorkerEditor: (() => void) | undefined;
 
-  pi.registerMessageRenderer(
-    WORKER_MESSAGE_TYPE,
-    createWorkerMessageRenderer(),
-  );
+  pi.registerMessageRenderer(WORKER_UI_KEY, createWorkerMessageRenderer());
 
   pi.on(SESSION_START_EVENT, (_event, ctx) => {
+    restoreWorkerEditor?.();
     setActiveModel(state, getContextModel(ctx));
+    restoreWorkerEditor = installWorkerEditor(ctx, state);
     clearWorkerUi(ctx);
   });
 
@@ -48,11 +49,13 @@ export default function workerExtension(pi: ExtensionAPI): void {
 
   pi.on(INPUT_EVENT, (_event, ctx): InputEventResult | void => {
     if (!isWorkerBusy(state)) return;
-    ctx.ui.notify(BUSY_MESSAGE, WARNING_LEVEL);
+    ctx.ui.notify(WORKER_MESSAGES.busy, WARNING_LEVEL);
     return { action: "handled" };
   });
 
   pi.on(SESSION_SHUTDOWN_EVENT, () => {
+    restoreWorkerEditor?.();
+    restoreWorkerEditor = undefined;
     state.worker?.cancel?.();
     clearWorkerRun(state);
   });
