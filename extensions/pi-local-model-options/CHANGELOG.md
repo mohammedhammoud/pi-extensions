@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.3](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.4.2...pi-local-model-options-v0.4.3) (2026-05-26)
+
+
+### Bug Fixes
+
+* update package exports to reference dist instead of src ([e994583](https://github.com/mohammedhammoud/pi-extensions/commit/e994583ee7cbc4e2f61821f33b17f31fe04e4a89))
+
 ## [0.4.2](https://github.com/mohammedhammoud/pi-extensions/compare/pi-local-model-options-v0.4.1...pi-local-model-options-v0.4.2) (2026-05-25)
 
 
