@@ -1,6 +1,9 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
+import { STORE_VERSION } from "./artifact-index";
+import { getWorkerSettingsPath } from "./layout";
+import { DEFAULT_WORKER_TIMEOUT_MS } from "../../options/timeout/timeout";
+import { isRecord } from "../../shared/guards";
 
 export interface WorkerSettings {
   timeoutMs?: number;
@@ -13,17 +16,16 @@ interface Store {
   };
 }
 
-const DEFAULT_WORKER_TIMEOUT_MS = 120000;
-const STORE_VERSION = 1;
 const DEFAULT_WORKER_SETTINGS: WorkerSettings = {
   timeoutMs: DEFAULT_WORKER_TIMEOUT_MS,
 };
 
 export function loadWorkerSettings(): WorkerSettings {
   try {
-    const storePath = getStorePath();
-    if (!fs.existsSync(storePath))
+    const storePath = getWorkerSettingsPath();
+    if (!fs.existsSync(storePath)) {
       return cloneWorkerSettings(DEFAULT_WORKER_SETTINGS);
+    }
     const raw = JSON.parse(fs.readFileSync(storePath, "utf8")) as unknown;
     return isStore(raw)
       ? readWorkerSettingsFromStore(raw)
@@ -35,17 +37,9 @@ export function loadWorkerSettings(): WorkerSettings {
 }
 
 export function saveWorkerSettings(settings: WorkerSettings): void {
-  const storePath = getStorePath();
+  const storePath = getWorkerSettingsPath();
   fs.mkdirSync(path.dirname(storePath), { recursive: true });
   fs.writeFileSync(storePath, JSON.stringify(toStore(settings)));
-}
-
-export function getStorePath(): string {
-  return path.join(getWorkerRootDir(), "settings.json");
-}
-
-function getWorkerRootDir(): string {
-  return path.join(os.homedir(), ".pi", "worker");
 }
 
 function cloneWorkerSettings(settings: WorkerSettings): WorkerSettings {
@@ -73,8 +67,4 @@ function isStore(value: unknown): value is Store {
   if (!isRecord(value.settings)) return false;
   const { timeoutMs } = value.settings;
   return timeoutMs === null || typeof timeoutMs === "number";
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
 }

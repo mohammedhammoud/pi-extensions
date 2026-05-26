@@ -5,7 +5,7 @@ import {
   appendWorkerStdout,
   createState,
   startWorkerRun,
-} from "./state";
+} from "./session";
 
 test("appendWorkerStdout keeps recent unique lines", () => {
   const state = createState();

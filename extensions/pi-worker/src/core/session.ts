@@ -1,18 +1,13 @@
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
+import type { WorkerMode } from "./mode/definition";
 
 const RECENT_OUTPUT_LINE_LIMIT = 6;
-
-// ExtensionState is intentionally mutable session state.
-// It is owned by the extension and mutated by event handlers during a pi session.
-// No immutability or reducer pattern here — state is a simple carrier between
-// extension lifecycle, command handlers, and the worker process.
 
 export interface ActiveModel {
   provider: string;
   id: string;
+  contextWindow?: number;
 }
-
-export type WorkerMode = "task" | "plan" | "implement" | "review";
 
 export interface WorkerRunState {
   model: ActiveModel;
@@ -44,6 +39,7 @@ export function getContextModel(
   return {
     provider: ctx.model.provider,
     id: ctx.model.id,
+    contextWindow: ctx.model.contextWindow,
   };
 }
 

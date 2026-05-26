@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { loadWorkerSettings, saveWorkerSettings, getStorePath } from "./store";
+import { getWorkerSettingsPath } from "./layout";
+import { loadWorkerSettings, saveWorkerSettings } from "./settings";
 
 test("loadWorkerSettings reads only the global worker path", () => {
   const home = fs.mkdtempSync(path.join(os.tmpdir(), "pi-worker-store-"));
@@ -22,11 +23,14 @@ test("loadWorkerSettings reads only the global worker path", () => {
 
     saveWorkerSettings({ timeoutMs: 9000 });
 
-    assert.equal(fs.existsSync(getStorePath()), true);
-    assert.deepEqual(JSON.parse(fs.readFileSync(getStorePath(), "utf8")), {
-      version: 1,
-      settings: { timeoutMs: 9000 },
-    });
+    assert.equal(fs.existsSync(getWorkerSettingsPath()), true);
+    assert.deepEqual(
+      JSON.parse(fs.readFileSync(getWorkerSettingsPath(), "utf8")),
+      {
+        version: 1,
+        settings: { timeoutMs: 9000 },
+      },
+    );
   } finally {
     process.env.HOME = previousHome;
     fs.rmSync(home, { recursive: true, force: true });
