@@ -24,7 +24,7 @@ import {
   type ExtensionState,
 } from "../core/session";
 import { saveWorkerSettings } from "../core/storage/settings";
-import { openWorkerPanel, type WorkerTimeoutMs } from "../options/panel/open";
+import { openWorkerPanel } from "../options/panel/open";
 import { WORKER_MESSAGES } from "../ui/copy";
 import {
   createWorkerFinishMessage,
@@ -43,7 +43,7 @@ export async function openAndPersistWorkerPanel(
   ctx: ExtensionCommandContext,
 ) {
   const currentModel = getContextModel(ctx) ?? state.activeModel;
-  const persistTimeout = (timeoutMs: WorkerTimeoutMs): void => {
+  const persistTimeout = (timeoutMs: number): void => {
     setWorkerTimeout(state, timeoutMs);
     saveWorkerSettings(timeoutMs !== undefined ? { timeoutMs } : {});
   };

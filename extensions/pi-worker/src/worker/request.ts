@@ -4,7 +4,6 @@ import {
   type WorkerMode,
 } from "../core/mode/definition";
 import type { ModelInfo } from "../options/model/select";
-import type { WorkerTimeoutMs } from "../options/timeout/timeout";
 
 const SHARED_DIRECTIVES = [
   "You are a repo worker running in an isolated pi session.",
@@ -19,7 +18,7 @@ export interface WorkerRequestDraft {
   model: ModelInfo;
   mode: WorkerMode;
   prompt: string;
-  timeoutMs: WorkerTimeoutMs;
+  timeoutMs: number;
   selectedPlan?: WorkerPlan;
 }
 
@@ -28,7 +27,7 @@ export interface WorkerRequest {
   mode: WorkerMode;
   rawPrompt: string;
   compiledPrompt: string;
-  timeoutMs: WorkerTimeoutMs;
+  timeoutMs: number;
   selectedPlan?: WorkerPlan;
 }
 

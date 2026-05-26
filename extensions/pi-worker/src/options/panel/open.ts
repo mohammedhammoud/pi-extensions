@@ -3,6 +3,7 @@ import { Key, matchesKey } from "@earendil-works/pi-tui";
 import type { ActiveModel } from "../../core/session";
 import {
   cycleWorkerMode,
+  getWorkerModeColor,
   requiresWorkerPlan,
   showsWorkerPlan,
   type WorkerMode,
@@ -17,13 +18,12 @@ import {
 import { selectWorkerPlan } from "../plan/picker";
 import {
   createWorkerSettingRows,
-  getModeColor,
   type WorkerSettingsAction,
   type WorkerSettingsViewState,
   renderSettingsLine,
   truncateRowValue,
 } from "./rows";
-import { cycleWorkerTimeout, type WorkerTimeoutMs } from "../timeout/timeout";
+import { cycleWorkerTimeout } from "../timeout/timeout";
 import type { WorkerRequestDraft } from "../../worker/request";
 import type { WorkerPlan } from "../../artifacts/plans/store";
 import { getWorkerPlanDisplayName } from "../../artifacts/plans/labels";
@@ -34,7 +34,7 @@ const ERROR_LEVEL = "error";
 interface WorkerPanelState {
   model: ModelInfo;
   mode: WorkerMode;
-  timeoutMs: WorkerTimeoutMs;
+  timeoutMs: number;
   selectedPlan: WorkerPlan | undefined;
 }
 
@@ -42,9 +42,9 @@ export async function openWorkerPanel(
   ctx: ExtensionContext,
   currentModel: ActiveModel | undefined,
   currentMode: WorkerMode,
-  currentTimeoutMs: WorkerTimeoutMs,
+  currentTimeoutMs: number,
   onModeChange?: (mode: WorkerMode) => void,
-  onTimeoutChange?: (timeoutMs: WorkerTimeoutMs) => void,
+  onTimeoutChange?: (timeoutMs: number) => void,
 ): Promise<WorkerRequestDraft | undefined> {
   const models = getSelectableModels(ctx, currentModel);
   if (models.length === 0) {
@@ -116,7 +116,7 @@ function openWorkerSettings(
   ctx: ExtensionContext,
   initialState: WorkerSettingsViewState,
   setMode: (mode: WorkerMode) => void,
-  setTimeoutMs: (timeoutMs: WorkerTimeoutMs) => void,
+  setTimeoutMs: (timeoutMs: number) => void,
 ): Promise<WorkerSettingsAction | undefined> {
   return ctx.ui.custom<WorkerSettingsAction | undefined>(
     (tui, theme, _kb, done) => {
@@ -133,7 +133,7 @@ function openWorkerSettings(
 
       return {
         render: (width: number): string[] => [
-          theme.fg(getModeColor(viewState), theme.bold("⚙ worker")),
+          theme.fg(getWorkerModeColor(viewState.mode), theme.bold("⚙ worker")),
           ...rows.map((row, index) =>
             renderSettingsLine(
               theme,
@@ -210,5 +210,3 @@ function toViewState(state: WorkerPanelState): WorkerSettingsViewState {
       : WORKER_PANEL_COPY.noPlan,
   };
 }
-
-export type { WorkerTimeoutMs } from "../timeout/timeout";

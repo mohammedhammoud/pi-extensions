@@ -1,15 +1,7 @@
 import type { Theme } from "@earendil-works/pi-coding-agent";
 import { truncateToWidth } from "@earendil-works/pi-tui";
-import {
-  getWorkerModeColor,
-  showsWorkerPlan,
-  type WorkerMode,
-} from "../../core/mode/definition";
-import {
-  formatTimeout,
-  parseTimeoutLabel,
-  type WorkerTimeoutMs,
-} from "../timeout/timeout";
+import { showsWorkerPlan, type WorkerMode } from "../../core/mode/definition";
+import { formatTimeout } from "../timeout/timeout";
 import { WORKER_PANEL_COPY } from "../../ui/copy";
 
 const MIN_MODEL_WIDTH = 10;
@@ -34,7 +26,7 @@ export interface WorkerSettingRow {
 export interface WorkerSettingsViewState {
   modelLabel: string;
   mode: WorkerMode;
-  timeoutMs: WorkerTimeoutMs;
+  timeoutMs: number;
   planLabel: string;
 }
 
@@ -76,43 +68,15 @@ export function createWorkerSettingRows(
   ];
 }
 
-export function getModeColor(state: WorkerSettingsViewState) {
-  return getWorkerModeColor(state.mode);
-}
-
-export function getModeFromRows(rows: WorkerSettingRow[]): WorkerMode {
-  return (
-    (rows.find((row) => row.action === "mode")?.value as
-      | WorkerMode
-      | undefined) ?? "task"
-  );
-}
-
-export function getTimeoutFromRows(rows: WorkerSettingRow[]): WorkerTimeoutMs {
-  return parseTimeoutLabel(
-    rows.find((row) => row.action === "timeout")?.value ?? "off",
-  );
-}
+type Tone = "accent" | "warning" | "success" | "error" | "muted" | "text";
 
 export function renderSettingsLine(
   theme: Theme,
   label: string,
   value: string,
   selected: boolean,
-  idleTone:
-    | "accent"
-    | "warning"
-    | "success"
-    | "error"
-    | "muted"
-    | "text" = "text",
-  selectedTone:
-    | "accent"
-    | "warning"
-    | "success"
-    | "error"
-    | "muted"
-    | "text" = "accent",
+  idleTone: Tone = "text",
+  selectedTone: Tone = "accent",
 ): string {
   const prefix = selected ? "→ " : "  ";
   const labelText = `${prefix}${label.padEnd(SETTING_LABEL_WIDTH, " ")}`;
