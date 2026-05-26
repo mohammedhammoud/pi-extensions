@@ -1,10 +1,4 @@
-export const WORKER_MODES = [
-  "task",
-  "plan",
-  "refine",
-  "implement",
-  "review",
-] as const;
+const WORKER_MODES = ["task", "plan", "refine", "implement", "review"] as const;
 
 export type WorkerMode = (typeof WORKER_MODES)[number];
 
@@ -15,7 +9,7 @@ export interface WorkerModeMeta {
   directives: string[];
 }
 
-export const WORKER_MODE_META: Record<WorkerMode, WorkerModeMeta> = {
+const WORKER_MODE_META: Record<WorkerMode, WorkerModeMeta> = {
   task: {
     color: "muted",
     requiresPlan: false,

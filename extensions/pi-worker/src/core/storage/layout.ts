@@ -47,15 +47,15 @@ export function createArtifactId(
   return `${timestamp}-${promptSlug || fallback}-${suffix}`;
 }
 
-export function getWorkerRootDir(): string {
+function getWorkerRootDir(): string {
   return path.join(os.homedir(), ".pi", "worker");
 }
 
-export function getReposRootDir(): string {
+function getReposRootDir(): string {
   return path.join(getWorkerRootDir(), REPOS_DIR);
 }
 
-export function getRepoDir(repoId: string): string {
+function getRepoDir(repoId: string): string {
   return path.join(getReposRootDir(), repoId);
 }
 
@@ -75,7 +75,7 @@ export function getRepoPlansMetaDir(repoId: string): string {
   return path.join(getRepoDir(repoId), "plans-meta");
 }
 
-export function getIndexDir(): string {
+function getIndexDir(): string {
   return path.join(getWorkerRootDir(), INDEX_DIR);
 }
 
@@ -130,7 +130,7 @@ export function prependUnique<T>(
   return [next, ...items.filter((item) => !matches(item))];
 }
 
-export function createStableId(value: string): string {
+function createStableId(value: string): string {
   return crypto.createHash("sha1").update(value).digest("hex").slice(0, 16);
 }
 

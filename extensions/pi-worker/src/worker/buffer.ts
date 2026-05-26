@@ -1,22 +1,16 @@
 const MAX_STDOUT_BUFFER_CHARS = 100_000;
 const TRUNCATED_LINE_PREFIX = "[buffer overflow, truncated]";
 
-export interface DrainResult {
+interface DrainResult {
   lines: string[];
   rest: string;
-}
-
-export interface GuardedDrainResult {
-  lines: string[];
-  rest: string;
-  overflowWarning?: string;
 }
 
 /**
  * Drain newline-delimited lines from a buffer.
  * Returns complete lines plus the remaining incomplete tail.
  */
-export function drainLineBuffer(buffer: string): DrainResult {
+function drainLineBuffer(buffer: string): DrainResult {
   const lines: string[] = [];
   let rest = buffer;
 
@@ -28,6 +22,12 @@ export function drainLineBuffer(buffer: string): DrainResult {
     lines.push(rest.slice(0, newlineIndex));
     rest = rest.slice(newlineIndex + 1);
   }
+}
+
+export interface GuardedDrainResult {
+  lines: string[];
+  rest: string;
+  overflowWarning?: string;
 }
 
 /**
