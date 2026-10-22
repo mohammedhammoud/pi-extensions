@@ -168,7 +168,15 @@ export function registerPlanCommands(pi: ExtensionAPI): void {
           if (!selected || signal.aborted) break;
           const { action, plan } = selected;
           selectedId = plan.id;
-          if (action === "open") await openPlanEditor(ctx, plan.path);
+          if (action === "open") {
+            const body = await openPlanEditor(ctx, plan);
+            if (body === undefined || body === plan.body) continue;
+            const title =
+              /^# [^\S\r\n]*(.+)(?:\r?\n|$)/.exec(body)?.[1]?.trim() ||
+              plan.title;
+            await store.revise(plan, title, body);
+            ctx.ui.notify(`Plan updated: ${title}`, "info");
+          }
           if (action === "toggle") {
             const destination = status === "active" ? "done" : "active";
             await store.move(plan, destination);

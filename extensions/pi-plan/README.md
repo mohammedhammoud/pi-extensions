@@ -14,12 +14,10 @@ Omit a prompt to enter it in a multi-line dialog. Escape cancels selection or ge
 
 In `/plan:list`:
 
-- **Enter** opens the actual Markdown file in `$VISUAL`, then `$EDITOR`.
+- **Enter** opens the plan in Pi's built-in editor. Submit saves changes to the plan; Escape cancels.
 - **Tab** moves the selected plan between Active and Done. It disappears from the current status list.
 - **X** asks for confirmation, then moves the selected plan to trash.
 - **Escape** returns to status selection; Escape there closes the browser.
-
-Pi 0.75.5 uses `VISUAL` and `EDITOR` for its external editor; this extension follows that convention. If neither is set, opening a plan reports an error. Editor commands can include arguments, e.g. `EDITOR='code --wait'`; GUI editors must wait for the file to close.
 
 ## Storage and project identity
 
