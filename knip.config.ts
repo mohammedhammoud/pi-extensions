@@ -9,6 +9,9 @@ const config: KnipConfig = {
     "extensions/pi-local-model-options": {
       project: ["src/**/*.ts", "*.ts"],
     },
+    "extensions/pi-plan": {
+      project: ["src/**/*.ts", "*.ts", "!src/**/*.test.ts"],
+    },
     "extensions/pi-worker": {
       project: ["src/**/*.ts", "*.ts", "!src/**/*.test.ts"],
     },

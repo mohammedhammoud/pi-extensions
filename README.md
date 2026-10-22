@@ -6,6 +6,7 @@ Monorepo for Pi extensions.
 
 - `@mohammedhammoud/pi-local-model-options` — per-model local provider options.
 - `@mohammedhammoud/pi-worker` — isolated CLI worker processes with a configurable TUI panel.
+- `@mohammedhammoud/pi-plan` — project-scoped Markdown plans with editor access and status toggles.
 
 ## Development
 
