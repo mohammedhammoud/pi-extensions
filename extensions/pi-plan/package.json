@@ -1,6 +1,6 @@
 {
   "name": "@mohammedhammoud/pi-plan",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Project-scoped Markdown plans with an interactive plan browser.",
   "type": "module",
   "license": "MIT",
