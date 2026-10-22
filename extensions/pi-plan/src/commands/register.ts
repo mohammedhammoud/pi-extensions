@@ -3,6 +3,7 @@ import type {
   ExtensionCommandContext,
 } from "@earendil-works/pi-coding-agent";
 import { generatePlan } from "../core/generate";
+import { loadPlanForExecution } from "../core/execution";
 import { PlanStore, resolveProject, type Plan } from "../core/store";
 import { openPlanEditor } from "../ui/editor";
 import { pickPlan, selectStatus } from "../ui/picker";
@@ -121,6 +122,22 @@ export function registerPlanCommands(pi: ExtensionAPI): void {
       if (!generated || signal.aborted) return;
       await store.revise(plan, generated.title, generated.body);
       ctx.ui.notify(`Plan updated: ${generated.title}`, "info");
+    },
+  );
+
+  register(
+    "plan:execute",
+    "Choose an Active plan and load it into the editor for implementation",
+    async (_args, ctx, projectPath, signal) => {
+      const plans = await store.list(projectPath, "active");
+      if (signal.aborted) return;
+      if (!plans.length) {
+        ctx.ui.notify("No active plans for this project.", "info");
+        return;
+      }
+      const selected = await pickPlan(ctx, plans, "active");
+      if (!selected || signal.aborted) return;
+      await loadPlanForExecution(ctx.ui, selected.plan, signal);
     },
   );
 

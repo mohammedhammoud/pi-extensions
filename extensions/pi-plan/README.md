@@ -8,6 +8,7 @@ Project-scoped Markdown plans for Pi. Requires interactive terminal mode.
 - `/plan:edit <prompt>` — choose a plan and generate a revision without changing its status.
 - `/plan:list` — choose Active or Done, then browse this project's plans.
 - `/plan:show` — choose a plan and view it read-only inside Pi.
+- `/plan:execute` — choose an Active plan and load its contents into Pi's editor for implementation. Review and submit to start; nothing executes automatically. Existing editor text is replaced only after confirmation. Plan status stays Active until you change it.
 
 Omit a prompt to enter it in a multi-line dialog. Escape cancels selection or generation without saving.
 
