@@ -1,5 +1,5 @@
 {
   "extensions/pi-local-model-options": "0.4.3",
   "extensions/pi-worker": "1.1.1",
-  "extensions/pi-plan": "0.1.0"
+  "extensions/pi-plan": "0.2.0"
 }
